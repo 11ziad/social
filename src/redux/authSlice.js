@@ -1,10 +1,9 @@
-import { Token } from "@mui/icons-material";
-
 const { createSlice } = require("@reduxjs/toolkit");
 
 export let initialState ={ 
      loading : false,
-        token : localStorage.getItem('token') ,
+ token: typeof window !== "undefined" ? localStorage.getItem("token") : null,
+
          err : false
 
 }
