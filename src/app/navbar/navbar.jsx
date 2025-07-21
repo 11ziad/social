@@ -1,12 +1,11 @@
 "use client";
 import React from "react";
 import {
-  AppBar, Toolbar, IconButton, Typography, Menu,
+  AppBar, Toolbar, IconButton, Menu,
   MenuItem, Container, Avatar, Button, Box
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { red } from "@mui/material/colors";
 import MuiNavLink from "../muiNavLink/page";
 import { useDispatch, useSelector } from "react-redux";
 import { removToken } from "@/redux/authSlice";
