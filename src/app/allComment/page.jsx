@@ -77,7 +77,7 @@ export default function AllComment({ id, setModal }) {
           ) : (
             <Grid container justifyContent="center">
               <Card
-                key={comment.id}
+                key={comment?.id}
                 sx={{
                   width: "100%",
                   maxWidth: 640,
@@ -88,7 +88,7 @@ export default function AllComment({ id, setModal }) {
                   avatar={
                     <Avatar sx={{ bgcolor: red[500] }}>
                       <img
-                        src={comment.user?.photo}
+                        src={comment?.user?.photo}
                         style={{ width: "100%" }}
                         alt=""
                       />
@@ -129,8 +129,8 @@ export default function AllComment({ id, setModal }) {
                     >
                       <ListItemAvatar>
                         <Avatar
-                          alt={ite.commentCreator?.name}
-                          src={ite.commentCreator?.photo}
+                          alt={ite?.commentCreator?.name}
+                          src={ite?.commentCreator?.photo}
                         />
                       </ListItemAvatar>
                       <Box
@@ -141,7 +141,7 @@ export default function AllComment({ id, setModal }) {
                         }}
                       >
                         <ListItemText
-                          primary={ite.commentCreator?.name}
+                          primary={ite?.commentCreator?.name}
                           secondary={ite?.content}
                         />
                         <Box
@@ -151,7 +151,9 @@ export default function AllComment({ id, setModal }) {
                             alignSelf: "flex-end",
                           }}
                         >
-                          {ite?.createdAt.slice(0, 10)}
+                          {ite?.createdAt?.split("T")?.[0] || ""
+
+}
                         </Box>
                       </Box>
                     </ListItem>
