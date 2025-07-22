@@ -1,4 +1,3 @@
- "use client"
 
 const { createSlice } = require("@reduxjs/toolkit");
 

@@ -4,7 +4,7 @@ import { store } from "@/redux/stor";
 import { Provider } from 'react-redux'
 import "./globals.css";
 import { Toaster } from 'react-hot-toast';
-import Navbar from "@/app/navbar/navbar";
+import Navbar from "@/app/navbar/page";
 import '@fortawesome/fontawesome-free/css/all.min.css'
 import UserContextProvider from "@/context/page";
 

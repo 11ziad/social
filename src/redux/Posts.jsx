@@ -13,9 +13,12 @@ export let initialState = {
 export let getPosts = createAsyncThunk(
   'posts/getPosts',
   async ({ limit = 10, page = 1 }) => {
+        const token =
+      typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     const { data } = await axios.get(`https://linked-posts.routemisr.com/posts?limit=${limit}&page=${page}`, {
       headers: {
-        token: localStorage.getItem('token'),
+            token: token,
+
       },
     });
 
@@ -25,10 +28,13 @@ export let getPosts = createAsyncThunk(
 );
 
  export let getComment = createAsyncThunk('posts/getPost', async(id)=>{
+ const token =
+      typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
         let {data} = await axios.get(`https://linked-posts.routemisr.com/posts/${id}`, {
           headers: {
-            token: localStorage.getItem('token')
+                 token: token,
+
           }
         })
         console.log(data); 

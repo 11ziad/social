@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
-import MuiNavLink from "../muiNavLink/page";
+import MuiNavLink from "../muiNavLink/MuiNavLink";
 import { useDispatch, useSelector } from "react-redux";
 import { removToken, setToken } from "@/redux/authSlice";
 import { useRouter } from "next/navigation";
@@ -20,11 +20,14 @@ export default function Navbar() {
   const { token } = useSelector((store) => store.authReducer);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
 useEffect(() => {
-  if (typeof window !== 'undefined') {
-    const storedToken = localStorage.getItem('token');
-    if (storedToken) dispatch(setToken(storedToken));
+  if (typeof window !== "undefined") {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      dispatch(setToken(storedToken)); 
+    }
   }
 }, []);
+
   const handleOpenNavMenu = (event) => setAnchorElNav(event.currentTarget);
   const handleCloseNavMenu = () => setAnchorElNav(null);
 
