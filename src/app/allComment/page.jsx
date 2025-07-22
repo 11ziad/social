@@ -8,7 +8,6 @@ import {Grid,Card,CardHeader,CardMedia,CardContent,Avatar,Typography,Button,Box,
 import { red } from "@mui/material/colors";
 import CancelIcon from "@mui/icons-material/Cancel";
 import LoadingComment from "../LoadingComment/page";
-import { useFormik } from "formik";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { getComment } from "@/redux/Posts";
@@ -16,8 +15,7 @@ import { getComment } from "@/redux/Posts";
 export default function AllComment({ id, setModal }) {
   const [loadingSend, setLoadingSend] = useState(false)
     const commentRef = useRef(); 
-  const { comment, loadingComment } = useSelector(
-    (store) => store.postsReducer
+  const { comment, loadingComment } = useSelector((store) => store.postsReducer
   );
 
   let dispatch=useDispatch()
@@ -122,7 +120,7 @@ export default function AllComment({ id, setModal }) {
 
                 {/* Comments List */}
                 <List sx={{ width: "100%", bgcolor: "#fff" }}>
-                  {[...comment?.comments].reverse().map((ite) => (
+                 {[...(comment?.comments ?? [])].reverse().map((ite)  => (
                     <ListItem
                       key={ite._id}
                       alignItems="flex-start"

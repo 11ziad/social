@@ -12,8 +12,13 @@ export default function MuiNavLink({ href, label }) {
     <Link href={href} passHref>
       <Box style={{ textDecoration: 'none', }}
         component="span"
-        sx={{
-            color: isActive ? 'white': 'white',
+                sx={{
+                  color: {
+          xs: isActive ? "#272727ff" : "#272727ff",     // موبايل
+          sm: isActive ? "#272727ff" : "#272727ff",    // تابلت صغير
+          md: isActive ? "#ccc" : "#222",       // لابتوب
+          lg: isActive ? "#fff" : "#fff",       // شاشات كبيرة
+          },
           fontWeight: isActive ? 'bold' : 'normal',
           borderBottom: isActive ? '2px solid white' : 'none',
            px: 2,
