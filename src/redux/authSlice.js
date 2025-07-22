@@ -16,7 +16,7 @@ export let initialState ={
                 state.loading = action.payload
         },
     setToken: (state, action) => {
-      state.token = action.payload.token;
+      state.token = action.payload;
     },
          setError :(state,action)=>{
             state.loading = false

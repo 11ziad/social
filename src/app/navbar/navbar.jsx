@@ -1,6 +1,6 @@
 "use client";
 export const dynamic = "force-dynamic";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   AppBar, Toolbar, IconButton, Menu,
   MenuItem, Container, Avatar, Button, Box
@@ -9,7 +9,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MuiNavLink from "../muiNavLink/page";
 import { useDispatch, useSelector } from "react-redux";
-import { removToken } from "@/redux/authSlice";
+import { removToken, setToken } from "@/redux/authSlice";
 import { useRouter } from "next/navigation";
 import { UserContext } from "@/context/page";
 
@@ -19,7 +19,12 @@ export default function Navbar() {
     let { userProfile ,setUserProfile} = useContext(UserContext);
   const { token } = useSelector((store) => store.authReducer);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
-
+  useEffect(() => {
+  const storedToken = localStorage.getItem('token');
+  if (storedToken) {
+    dispatch(setToken(storedToken));
+  }
+}, []);
   const handleOpenNavMenu = (event) => setAnchorElNav(event.currentTarget);
   const handleCloseNavMenu = () => setAnchorElNav(null);
 
