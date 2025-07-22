@@ -81,7 +81,7 @@ export default function AllPosts() {
                     </Avatar>
                   }
                   title={item?.user?.name}
-                  subheader={item?.createdAt?.split("T")?.[0] || ""}
+                 subheader={item?.createdAt?.split("T")?.[0] ?? ""}
                 />
                 {item?.image && (
                   <CardMedia component="img" height="300" image={item?.image} alt="post image" />

@@ -103,7 +103,8 @@ export default function AllComment({ id, setModal }) {
                     />
                   }
                   title={comment?.user?.name}
-                  subheader={comment?.createdAt.split("T")[0]}
+                  subheader={comment?.createdAt?.split("T")?.[0] ?? ""}
+
                 />
                 <CardContent>
                   <Typography variant="body2" sx={{ color: "text.secondary" }}>
