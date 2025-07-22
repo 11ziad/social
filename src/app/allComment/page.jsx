@@ -1,5 +1,5 @@
 "use client";
-
+export const dynamic = "force-dynamic";
 import React,{useRef, useState} from "react";
 import AuthGuard from "../authGuard/page,";
 import { useDispatch, useSelector } from "react-redux";

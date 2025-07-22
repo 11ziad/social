@@ -6,6 +6,7 @@ import "./globals.css";
 import { Toaster } from 'react-hot-toast';
 import Navbar from "@/app/navbar/navbar";
 import '@fortawesome/fontawesome-free/css/all.min.css'
+import { ProvContextProvider } from "@/context/page";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,12 +25,15 @@ export default function RootLayout({ children }) {
       
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Provider store={store}>
+          <ProvContextProvider>
+
         <Navbar></Navbar>
         <>
   <Toaster position="top-center" reverseOrder={false} />
   {/* باقي الكود */}
 </>
         {children}
+          </ProvContextProvider>
           </Provider>  
       </body>
     </html>
