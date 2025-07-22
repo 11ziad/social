@@ -19,10 +19,10 @@ export default function Navbar() {
     let { userProfile ,setUserProfile} = useContext(UserContext);
   const { token } = useSelector((store) => store.authReducer);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
-  useEffect(() => {
-  const storedToken = localStorage.getItem('token');
-  if (storedToken) {
-    dispatch(setToken(storedToken));
+useEffect(() => {
+  if (typeof window !== 'undefined') {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) dispatch(setToken(storedToken));
   }
 }, []);
   const handleOpenNavMenu = (event) => setAnchorElNav(event.currentTarget);
