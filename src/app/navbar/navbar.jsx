@@ -1,6 +1,6 @@
 "use client";
 export const dynamic = "force-dynamic";
-import React from "react";
+import React, { useContext } from "react";
 import {
   AppBar, Toolbar, IconButton, Menu,
   MenuItem, Container, Avatar, Button, Box
@@ -11,11 +11,13 @@ import MuiNavLink from "../muiNavLink/page";
 import { useDispatch, useSelector } from "react-redux";
 import { removToken } from "@/redux/authSlice";
 import { useRouter } from "next/navigation";
+import { UserContext } from "@/context/page";
 
 export default function Navbar() {
-  const { token } = useSelector((store) => store.authReducer);
   const dispatch = useDispatch();
   const router = useRouter();
+    let { userProfile ,setUserProfile} = useContext(UserContext);
+  const { token } = useSelector((store) => store.authReducer);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
 
   const handleOpenNavMenu = (event) => setAnchorElNav(event.currentTarget);
@@ -34,7 +36,7 @@ export default function Navbar() {
           {/* Logo / Avatar */}
           {token && (
             <IconButton sx={{ p: 0, pr: { xs: 1 } }}>
-              <Avatar alt="User" src="/static/images/avatar/2.jpg" />
+              <Avatar alt="User" src={userProfile?.photo} />
             </IconButton>
           )}
 
@@ -68,7 +70,7 @@ export default function Navbar() {
 
           {/* Desktop Menu Links */}
           {token && (
-            <Box sx={{ display: { xs: "none", md: "flex" }, ml: 2 }}>
+            <Box sx={{ display: { xs: "none", md: "flex" }, ml: 0 }}>
               <Button sx={{ color: "black" }}>
                 <MuiNavLink href="/allPosts" label="Posts" />
               </Button>

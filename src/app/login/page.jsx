@@ -22,7 +22,7 @@ export default function Login() {
       let { data } = await axios.post("https://linked-posts.routemisr.com/users/signin",value);
       toast.success(data.message);
       console.log(data);
-       dispatch(setToken(data))
+dispatch(setToken({ token: data.token }));
         dispatch(setLoading(false))
         //  router.push('/allPosts');
               router.replace('/allPosts');
