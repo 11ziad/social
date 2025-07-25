@@ -40,10 +40,13 @@ a{
 /* شاشات أكبر من 600px */
 @media (max-width: 600px) {
   .modal {
-    width: 410px;
-
+    width: 400px;
+  margin-top: 0;
 
   }
+}
+html, body {
+  overflow-x: hidden;
 }
 /* شاشات أكبر من 600px */
 @media (min-width: 600px) {

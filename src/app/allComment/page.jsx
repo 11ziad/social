@@ -1,25 +1,8 @@
 "use client";
 export const dynamic = "force-dynamic";
-
 import React, { useRef, useState } from "react";
 import AuthGuard from "../authGuard/page,";
-import {
-  Grid,
-  Card,
-  CardHeader,
-  CardMedia,
-  CardContent,
-  Avatar,
-  Typography,
-  Button,
-  Box,
-  TextField,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemAvatar,
-  Fade,
-} from "@mui/material";
+import {Grid,Card,CardHeader,CardMedia,CardContent,Avatar,Typography,Button,Box,TextField,List,ListItem,ListItemText,ListItemAvatar,Fade} from "@mui/material";
 import { red } from "@mui/material/colors";
 import CancelIcon from "@mui/icons-material/Cancel";
 import InsertCommentIcon from "@mui/icons-material/InsertComment";
@@ -74,7 +57,7 @@ export default function AllComment({ id, setModal }) {
 
   return (
     <AuthGuard>
-      <Box sx={{ height: "95vh", display: "flex", flexDirection: "column" }}>
+      <Box sx={{ height: "95vh", display: "flex", flexDirection: "column",p: { xs: 5, sm: 0, md: 0 }, }}>
         {/* Scrollable Area */}
         <Box sx={{ flexGrow: 1, overflowY: "auto", px: { xs: 1, sm: 2 } }}>
           {loadingComment ? (
@@ -200,27 +183,34 @@ export default function AllComment({ id, setModal }) {
               boxShadow: "0 -2px 8px rgba(0,0,0,0.1)",
               zIndex: 100,
               p: 1,
-              margin: "auto",
+               margin: "auto",
               width: { xs: "93%", sm: "94%", md: "623px" },
-              transform: { xs: "translateX(-7px)", sm: "translateX(-7px)" },
+              transform: { xs: "translateX(7px)", sm: "translateX(-7px)" },
               borderTopLeftRadius: 12,
               borderTopRightRadius: 12,
             }}
           >
             <Box sx={{ display: "flex", gap: 2 }}>
-              <TextField
-                inputRef={commentRef}
-                name="comment"
-                placeholder="Write your comment here..."
-                variant="outlined"
-                fullWidth
-                multiline
-                maxRows={3}
-                sx={{
-                  bgcolor: "#f9f9f9",
-                  borderRadius: 1,
-                }}
-              />
+                          <TextField
+                    inputRef={commentRef}
+                    name="comment"
+                    placeholder="Write your comment here..."
+                    variant="outlined"
+                    fullWidth
+                    multiline
+                    maxRows={3}
+                    InputProps={{
+                      sx: {
+                        px: { xs: 1, sm: 2 },  
+                        py: { xs: 1, sm: 1.5 },
+                      },
+                    }}
+                    sx={{
+                      bgcolor: "#f9f9f9",
+                      borderRadius: 1,
+                    }}
+                  />
+
               <Button type="submit" variant="contained">
                 {loadingSend ? (
                   <i

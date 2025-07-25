@@ -49,6 +49,10 @@ export default function Profile() {
       refreshUserProfile();
     }
   }, [token, dispatch]);
+  useEffect(() => {
+  dispatch(userPosts(tokenData?.user));
+  refreshUserProfile();
+}, []);
 
 const deletePost = async (id) => {
   try {
@@ -73,7 +77,7 @@ const deletePost = async (id) => {
   return (
     <AuthGuard>
       <Fade in timeout={500}>
-        <Box sx={{ position: "fixed", bottom: 16, right: 16, zIndex: 999 }}>
+        <Box sx={{ position: "fixed", bottom: 16, right: {xs:15, md:16}, zIndex: 999, margin:'auto' }}>
           <SpeedDial
             ariaLabel="Add Post"
             icon={<SpeedDialIcon openIcon={<EditIcon />} />}
@@ -88,7 +92,9 @@ const deletePost = async (id) => {
         <Grid container justifyContent="center" sx={{ mt: 10 }}>
           <Box
             sx={{
+               overflowX: "hidden",
               width: { xs: "90%", md: 700 },
+              margin:'auto',
               bgcolor: "white",
               borderRadius: 3,
               p: 3,
@@ -157,17 +163,7 @@ const deletePost = async (id) => {
       >
         {userPost?.posts?.length === 0 ? (
           <Box
-            sx={{
-              mt: 5,
-              textAlign: "center",
-              bgcolor: "#f5f5f5",
-              p: 4,
-              borderRadius: 3,
-              boxShadow: "0px 4px 20px rgba(0,0,0,0.07)",
-              width: { xs: "90%", md: 500 },
-              mx: "auto",
-            }}
-          >
+            sx={{mt: 1,textAlign: "center",bgcolor: "#f5f5f5",p: 4,borderRadius: 3,boxShadow: "0px 4px 20px rgba(0,0,0,0.07)",width: { xs: "90%", md: 500 },margin: "auto",}}>
             <Typography
               variant="h6"
               fontWeight="bold"
@@ -176,10 +172,17 @@ const deletePost = async (id) => {
             >
               There are no posts yet.
             </Typography>
-            <Typography variant="body2" color="text.secondary" mb={3}>
-              Share your thoughts or a special moment with others. Your first
-              post will be a great start
-            </Typography>
+                      <Typography
+            variant="body2"
+            color="text.secondary"
+            mb={3}
+            sx={{
+              pr: { xs: 4, sm: 6, md: 0 },  
+              textAlign: { xs: "center", sm: "start" }  
+            }}
+          >
+            Share your thoughts or a special moment with others. Your first post will be a great start
+          </Typography>
             <Button
               variant="contained"
               color="primary"
