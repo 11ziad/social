@@ -1,20 +1,8 @@
 "use client";
-
 import React, { useState, useContext } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import {
-  Box,
-  FormHelperText,
-  FormControl,
-  InputLabel,
-  Button,
-  OutlinedInput,
-  Typography,
-  IconButton,
-  InputAdornment,
-  Paper
-} from "@mui/material";
+import {Box,FormHelperText,FormControl,InputLabel,Button,OutlinedInput,Typography,IconButton,InputAdornment,Paper} from "@mui/material";
 import { Visibility, VisibilityOff, Login as LoginIcon } from "@mui/icons-material";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -22,7 +10,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { setLoading, setToken } from "@/redux/authSlice";
 import { UserContext } from "@/context/page";
- 
+ import {Helmet} from "react-helmet";
+
 export default function Login() {
   const { loading } = useSelector((store) => store.authReducer);
   const dispatch = useDispatch();
@@ -87,6 +76,11 @@ export default function Login() {
         px: 2
       }}
     >
+             <Helmet>
+                <meta charSet="utf-8" />
+                <title>Login</title>
+             </Helmet>
+ 
       <Paper
         elevation={6}
         sx={{

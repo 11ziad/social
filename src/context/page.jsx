@@ -11,19 +11,18 @@ export default function UserContextProvider({ children }) {
   const [load, setLoad] = useState(false);
   const [token, setToken] = useState(null);
 
-  // ✅ مراقبة التوكن من localStorage كل عدة ثواني لضمان التحديث
-  useEffect(() => {
+   useEffect(() => {
     const interval = setInterval(() => {
       const localToken = localStorage.getItem("token");
       if (localToken && localToken !== token) {
         setToken(localToken);
       }
-    }, 1000); // كل ثانية يراجع التوكن
+    }, 1000);  
 
-    return () => clearInterval(interval); // تنظيف عند فك المكون
+    return () => clearInterval(interval);  
   }, [token]);
 
-  // ✅ كل ما التوكن يتحدث، يتم تحديث البيانات
+  
   useEffect(() => {
     if (token) {
       refreshUserProfile(token);

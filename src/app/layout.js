@@ -11,6 +11,10 @@ import UserContextProvider, { UserContext } from "@/context/page";
 import { useContext, useEffect } from "react";
 import { userPosts } from "@/redux/Posts";
 import { jwtDecode } from "jwt-decode";
+import { Offline} from "react-detect-offline";
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
+import { Box } from "@mui/material";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,7 +26,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// ✅ مكون داخلي لتحديث بيانات المستخدم بمجرد دخول التوكن
 function InitUserData() {
   const { refreshUserProfile } = useContext(UserContext);
   const dispatch = useDispatch();
@@ -31,12 +34,12 @@ function InitUserData() {
     const token = localStorage.getItem("token");
     if (token) {
       const decoded = jwtDecode(token);
-      refreshUserProfile(token); // تحديث بيانات البروفايل
-      dispatch(userPosts(decoded.user)); // تحديث بوستات المستخدم
+      refreshUserProfile(token); 
+      dispatch(userPosts(decoded.user)); 
     }
   }, []);
 
-  return null; // مش بيعرض أي حاجة، بس وظيفته تشغيل التحديثات دي
+  return null; 
 }
 
 export default function RootLayout({ children }) {
@@ -46,9 +49,38 @@ export default function RootLayout({ children }) {
         <Provider store={store}>
           <UserContextProvider>
             <Navbar />
-            <InitUserData /> {/* ✅ تشغيل التحديث التلقائي */}
+            <InitUserData /> 
             <Toaster position="top-center" reverseOrder={false} />
             {children}
+              <Offline>
+                <Box
+                  sx={{
+                    position: "fixed",
+                    bottom: 16,
+                    right: 16,
+                    zIndex: 1300,
+                    width: { xs: "80%", sm: 300 },
+                    maxWidth: "90vw",
+                  }}
+                >
+                  <Alert
+                    severity="warning"
+                    variant="outlined" 
+                    sx={{
+                      fontSize: "0.85rem",
+                      px: 2,
+                      py: 1,
+                      borderRadius: 2,
+                      boxShadow: "0px 4px 12px rgba(0,0,0,0.1)",
+                      alignItems: "center",
+                    }}
+                  >
+                    You’re offline
+                  </Alert>
+                </Box>
+              </Offline>
+
+ 
           </UserContextProvider>
         </Provider>
       </body>

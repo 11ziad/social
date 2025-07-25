@@ -18,6 +18,7 @@ import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import EditIcon from '@mui/icons-material/Edit';
 import { useRouter } from "next/navigation";
+import {Helmet} from "react-helmet";
 
 export default function AllPosts() {
   const [modal, setModal] = useState(false);
@@ -41,7 +42,13 @@ export default function AllPosts() {
   };
 
   return (
-    <AuthGuard>
+    <AuthGuard>     
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>posts</title>
+                <link rel="canonical" href="http://mysite.com/example" />
+            </Helmet>
+ 
        <Box sx={{ position: "fixed", bottom: 0, right: 0 }}>
         <SpeedDial
           ariaLabel="Add Post"

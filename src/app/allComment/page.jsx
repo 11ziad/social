@@ -5,12 +5,13 @@ import AuthGuard from "../authGuard/page,";
 import {Grid,Card,CardHeader,CardMedia,CardContent,Avatar,Typography,Button,Box,TextField,List,ListItem,ListItemText,ListItemAvatar,Fade} from "@mui/material";
 import { red } from "@mui/material/colors";
 import CancelIcon from "@mui/icons-material/Cancel";
-import InsertCommentIcon from "@mui/icons-material/InsertComment";
-import LoadingComment from "../LoadingComment/page";
+ import LoadingComment from "../LoadingComment/page";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { getComment } from "@/redux/Posts";
+import {Helmet} from "react-helmet";
+
 
 export default function AllComment({ id, setModal }) {
   const [loadingSend, setLoadingSend] = useState(false);
@@ -49,7 +50,7 @@ export default function AllComment({ id, setModal }) {
       commentRef.current.value = "";
     } catch (err) {
       toast.error("Failed to send comment");
-      console.error(err);
+      // console.error(err);
     } finally {
       setLoadingSend(false);
     }
@@ -57,8 +58,12 @@ export default function AllComment({ id, setModal }) {
 
   return (
     <AuthGuard>
-      <Box sx={{ height: "95vh", display: "flex", flexDirection: "column",p: { xs: 4, sm: 0, md: 0 }, }}>
-        {/* Scrollable Area */}
+      <Box sx={{ height: "95vh", display: "flex", flexDirection: "column",p: { xs: 3, sm: 0, md: 0 }, }}>,
+             <Helmet>
+                <meta charSet="utf-8" />
+                <title>My Title</title>
+             </Helmet>
+          {/* Scrollable Area */}
         <Box sx={{ flexGrow: 1, overflowY: "auto", px: { xs: 1, sm: 2 } }}>
           {loadingComment ? (
             <LoadingComment />

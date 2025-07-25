@@ -24,7 +24,7 @@ export default function MuiNavLink({ href, label }) {
           py: 1,
           cursor: 'pointer',
           transition: '0.3s',
-  textDecoration: 'none'
+          textDecoration: 'none'    
         }}
       >
         {label}

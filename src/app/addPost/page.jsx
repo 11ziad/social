@@ -1,18 +1,13 @@
 "use client";
 import React, { useContext, useState } from "react";
 import {Box,Typography,Avatar,TextField,Button,IconButton,Paper,Stack,} from "@mui/material";
-import {
-  Close,
-  Image as ImageIcon,
-  LocationOn,
-  EmojiEmotions,
-  WhatsApp,
-} from "@mui/icons-material";
+import {Close,Image as ImageIcon,LocationOn,EmojiEmotions,WhatsApp,} from "@mui/icons-material";
 import { useRouter } from "next/navigation";
 import { UserContext } from "@/context/page";
 import toast from "react-hot-toast";
 import axios from "axios";
 import AuthGuard from "../authGuard/page,";
+import {Helmet} from "react-helmet";
 
 const AddPost = () => {
   const [imagePreview, setImagePreview] = useState(null);
@@ -67,7 +62,7 @@ const AddPost = () => {
       router.replace("/profile");
     } catch (err) {
       toast.error(" Failed to create post. Try again.");
-      console.error(err);
+      // console.error(err);
     } finally {
       setLoading(false);
     }
@@ -75,6 +70,10 @@ const AddPost = () => {
 
   return (
     <AuthGuard>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>Add Post</title>
+             </Helmet>
       <Paper
         elevation={4}
         sx={{

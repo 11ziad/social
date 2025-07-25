@@ -1,17 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  Box,
-  Button,
-  FormControl,
-  FormHelperText,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-  Paper,
-  Typography,
-} from "@mui/material";
+import {Box,Button,FormControl,FormHelperText,InputAdornment,InputLabel,OutlinedInput,Paper,Typography} from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -20,7 +10,8 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { setLoading, setToken } from "@/redux/authSlice";
 import { useRouter } from "next/navigation";
- 
+ import {Helmet} from "react-helmet";
+
 export default function ForgotPasswordPage() {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -79,6 +70,11 @@ export default function ForgotPasswordPage() {
           p: 3,
         }}
       >
+             <Helmet>
+                <meta charSet="utf-8" />
+                <title>New password</title>
+             </Helmet>
+ 
         <Paper elevation={3} sx={{ p: 4, borderRadius: 3 }}>
           <Typography variant="h5" fontWeight="bold" color="primary" mb={2}>
             Change Your Password

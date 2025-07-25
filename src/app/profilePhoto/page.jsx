@@ -1,18 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import {
-  Box,
-  Avatar,
-  Typography,
-  Button,
-  IconButton,
-  Stack,
-  Paper,
-} from "@mui/material";
+import {Box,Avatar,Typography,Button,IconButton,Stack,Paper,} from "@mui/material";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import {Helmet} from "react-helmet";
 
 export default function ProfileImageUploader() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -64,7 +57,7 @@ export default function ProfileImageUploader() {
       router.replace("/profile");
     } catch (err) {
       toast.error("Failed to update photo");
-      console.error(err);
+      // console.error(err);
     } finally {
       setLoading(false);
     }
@@ -82,6 +75,11 @@ export default function ProfileImageUploader() {
         background: "#f9f9f9",
       }}
     >
+             <Helmet>
+                <meta charSet="utf-8" />
+                <title>Profile Photo</title>
+             </Helmet>
+ 
       <Stack spacing={3} alignItems="center">
         <Typography variant="h5" fontWeight="bold" color="primary">
           Upload Profile Picture

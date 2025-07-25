@@ -22,8 +22,6 @@ export let getPosts = createAsyncThunk(
 
       },
     });
-
-    // console.log(data);
     return data;
   }
 );
@@ -38,8 +36,7 @@ export let getPosts = createAsyncThunk(
 
           }
         })
-        // console.log(data); 
-        return data.post
+         return data.post
 
 })
 export let userPosts = createAsyncThunk('posts/userPosts', async(id)=>{
@@ -49,12 +46,8 @@ export let userPosts = createAsyncThunk('posts/userPosts', async(id)=>{
             token: localStorage.getItem('token')
           }
         })
-        console.log(data); 
-        return data
-
+         return data
 })
-
-
 
 let postsSlice =  createSlice({
     name : 'posts',

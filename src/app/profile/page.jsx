@@ -1,6 +1,5 @@
 "use client";
 export const dynamic = "force-dynamic";
-
 import React, { useContext, useEffect, useState } from "react";
 import {Grid,Box,Typography,Card,CardHeader,CardContent,CardMedia,CardActions,IconButton,Fade,Avatar,AvatarGroup,SpeedDial,SpeedDialIcon,Button,} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
@@ -16,6 +15,7 @@ import { getComment, userPosts } from "@/redux/Posts";
 import AllComment from "../allComment/page";
 import AuthGuard from "../authGuard/page,";
 import Loading from "../loadingPosts/page";
+import {Helmet} from "react-helmet";
 
 export default function Profile() {
   const { userProfile, refreshUserProfile, load } = useContext(UserContext);
@@ -71,7 +71,7 @@ const deletePost = async (id) => {
     toast.success("Post deleted");
   } catch (err) {
     toast.error("Failed to delete");
-    console.error(err);
+    // console.error(err);
   }
 };
   return (
@@ -90,6 +90,11 @@ const deletePost = async (id) => {
         <Loading />
       ) : (
         <Grid container justifyContent="center" sx={{ mt: 10 }}>
+             <Helmet>
+                <meta charSet="utf-8" />
+                <title>Profile</title>
+             </Helmet>
+ 
           <Box
             sx={{
                overflowX: "hidden",

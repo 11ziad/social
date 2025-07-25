@@ -67,6 +67,11 @@ export default function Register() {
         py: 6,
       }}
     >
+             <Helmet>
+                <meta charSet="utf-8" />
+                <title>Register</title>
+             </Helmet>
+ 
       <Paper elevation={5} sx={{
         width: { xs: "90%", sm: "80%", md: "55%", lg: "40%" },
         p: 4,

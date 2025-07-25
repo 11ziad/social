@@ -29,7 +29,7 @@ function Media(props) {
             <Skeleton animation="wave" variant="circular" width={40} height={40} />
           ) : null
         }
- itle={
+ title={
           loading ? (
             <Skeleton
               animation="wave"
