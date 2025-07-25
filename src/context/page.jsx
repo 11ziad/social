@@ -1,4 +1,5 @@
 "use client";
+
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -9,24 +10,29 @@ export default function UserContextProvider({ children }) {
   const [userProfile, setUserProfile] = useState('');
   const [load, setLoad] = useState(false);
   const [token, setToken] = useState(null);
- 
-useEffect(() => {
-  if (typeof window !== "undefined") {
-    const storedToken = localStorage.getItem("token");
-    if (storedToken !== token) {
-      setToken(storedToken);
+
+  // ✅ مراقبة التوكن من localStorage كل عدة ثواني لضمان التحديث
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const localToken = localStorage.getItem("token");
+      if (localToken && localToken !== token) {
+        setToken(localToken);
+      }
+    }, 1000); // كل ثانية يراجع التوكن
+
+    return () => clearInterval(interval); // تنظيف عند فك المكون
+  }, [token]);
+
+  // ✅ كل ما التوكن يتحدث، يتم تحديث البيانات
+  useEffect(() => {
+    if (token) {
+      refreshUserProfile(token);
+    } else {
+      setUserProfile('');
     }
-  }
-}, [token]);
+  }, [token]);
 
-useEffect(() => {
-  if (token) {
-    refreshUserProfile(token);
-  }
-}, [token]);
-
-
-   const refreshUserProfile = async (tok) => {
+  const refreshUserProfile = async (tok) => {
     const userToken = tok || token;
     if (!userToken) return;
 
@@ -34,9 +40,7 @@ useEffect(() => {
     try {
       const { data } = await axios.get(
         "https://linked-posts.routemisr.com/users/profile-data",
-        {
-          headers: { token: userToken },
-        }
+        { headers: { token: userToken } }
       );
       setUserProfile(data.user);
     } catch (err) {

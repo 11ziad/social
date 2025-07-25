@@ -57,7 +57,7 @@ export default function AllComment({ id, setModal }) {
 
   return (
     <AuthGuard>
-      <Box sx={{ height: "95vh", display: "flex", flexDirection: "column",p: { xs: 5, sm: 0, md: 0 }, }}>
+      <Box sx={{ height: "95vh", display: "flex", flexDirection: "column",p: { xs: 4, sm: 0, md: 0 }, }}>
         {/* Scrollable Area */}
         <Box sx={{ flexGrow: 1, overflowY: "auto", px: { xs: 1, sm: 2 } }}>
           {loadingComment ? (
@@ -178,7 +178,7 @@ export default function AllComment({ id, setModal }) {
             onSubmit={handleSubmit}
             sx={{
               position: "sticky",
-              bottom: 0,
+              bottom: 3,
               bgcolor: "#fff",
               boxShadow: "0 -2px 8px rgba(0,0,0,0.1)",
               zIndex: 100,

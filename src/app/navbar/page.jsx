@@ -79,15 +79,19 @@ useEffect(() => {
                 <MenuItem onClick={handleCloseNavMenu}>
                   <MuiNavLink href="/profilePhoto" label="Photo" />
                 </MenuItem>
+                <MenuItem onClick={handleCloseNavMenu}>
+                  <MuiNavLink href="/newPassowrd" label="New Password" />
+                </MenuItem>
               </Menu>
             )}
           </Box>
 
           {token && (
-            <Box sx={{ display: { xs: "none", md: "flex" }, gap: 4, ml: 2 }}>
+            <Box sx={{ display: { xs: "none", md: "flex" }, gap: 3, ml: 2 }}>
               <MuiNavLink href="/allPosts" label="Posts" />
               <MuiNavLink href="/profile" label="Profile" />
               <MuiNavLink href="/profilePhoto" label="Photo" />
+              <MuiNavLink href="/newPassowrd" label="New Password" />
             </Box>
           )}
 
@@ -120,6 +124,9 @@ useEffect(() => {
                   <MenuItem disabled sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <Avatar src={userProfile?.photo} sx={{ width: 30, height: 30 }} />
                     <Typography variant="body2">{userProfile?.name}</Typography>
+                  </MenuItem>
+                  <MenuItem disabled sx={{fontSize:13,px:3}} onClick={logOut}>
+                     {userProfile?.email}
                   </MenuItem>
                   <MenuItem onClick={logOut}>
                     <LogoutIcon fontSize="small" sx={{ mr: 1 }} />

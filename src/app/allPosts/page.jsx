@@ -148,8 +148,8 @@ export default function AllPosts() {
               <ArrowBackIosNewIcon />
             </IconButton>
 
-            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-              Page {page}
+            <Typography variant="body2" sx={{ fontWeight: "bold",fontSize:{xs:12, md:14},display:'flex', justifyContent:'center',alignItems:'center' , gap:1}}>
+             <span>  page </span><span> {page}</span>
             </Typography>
 
             <IconButton
