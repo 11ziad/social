@@ -1,46 +1,63 @@
+"use client";
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
+export const UserContext = createContext();
 
-export let UserContext = createContext()
-
-
-
-export default function UserContextProvider({children}){
-
-   const [userProfile, setUserProfile] = useState('')
-   const [Load, setLoad] = useState(false)
+export default function UserContextProvider({ children }) {
+  const [userProfile, setUserProfile] = useState('');
+  const [load, setLoad] = useState(false);
+  const [token, setToken] = useState(null);
  
-  async function userData(){
-    setLoad(true)
-    try{
-          let token =typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-      let {data} =await axios.get(`https://linked-posts.routemisr.com/users/profile-data`,
-      {
-         headers: {
-            token,
-          },
+useEffect(() => {
+  if (typeof window !== "undefined") {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken !== token) {
+      setToken(storedToken);
+    }
+  }
+}, [token]);
 
-      }
+useEffect(() => {
+  if (token) {
+    refreshUserProfile(token);
+  }
+}, [token]);
+
+
+   const refreshUserProfile = async (tok) => {
+    const userToken = tok || token;
+    if (!userToken) return;
+
+    setLoad(true);
+    try {
+      const { data } = await axios.get(
+        "https://linked-posts.routemisr.com/users/profile-data",
+        {
+          headers: { token: userToken },
+        }
+      );
+      setUserProfile(data.user);
+    } catch (err) {
+      toast.error("Failed to refresh profile");
+    } finally {
+      setLoad(false);
+    }
+  };
+
+  return (
+    <UserContext.Provider
+      value={{
+        userProfile,
+        setUserProfile,
+        load,
+        setLoad,
+        refreshUserProfile,
+        token,
+      }}
+    >
+      {children}
+    </UserContext.Provider>
   );
-       console.log(data.user);
-       setUserProfile(data.user)
-       setLoad(false)
-  }catch(err){
-      console.log(err);
-      setLoad(false)
-  }
-
-  }
-  
-      useEffect(()=>{
-        userData()
-      },[])
-      
-
-
-return <UserContext.Provider value={{userProfile,setUserProfile,Load,setLoad}}>
-    {children}
-</UserContext.Provider>
-
 }

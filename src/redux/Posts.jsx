@@ -7,6 +7,7 @@ export let initialState = {
     posts : [],
     error : false,
     comment: {},
+    userPost : [],
     loadingComment:false
 }
 
@@ -37,10 +38,23 @@ export let getPosts = createAsyncThunk(
 
           }
         })
-        console.log(data); 
+        // console.log(data); 
         return data.post
 
 })
+export let userPosts = createAsyncThunk('posts/userPosts', async(id)=>{
+
+        let {data} = await axios.get(`https://linked-posts.routemisr.com/users/${id}/posts?`, {
+          headers: {
+            token: localStorage.getItem('token')
+          }
+        })
+        console.log(data); 
+        return data
+
+})
+
+
 
 let postsSlice =  createSlice({
     name : 'posts',
@@ -68,6 +82,17 @@ let postsSlice =  createSlice({
         })
         builder.addCase(getComment.rejected,(state,action)=>{
             state.loadingComment = false
+            state.error = action.payload
+        })
+         builder.addCase(userPosts.pending,(state)=>{
+            state.loading = true
+        })
+        builder.addCase(userPosts.fulfilled,(state,action)=>{
+            state.loading = false
+            state.userPost = action.payload
+        })
+        builder.addCase(userPosts.rejected,(state,action)=>{
+            state.loading = false
             state.error = action.payload
         })
  

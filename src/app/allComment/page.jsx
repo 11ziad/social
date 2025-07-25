@@ -1,76 +1,83 @@
 "use client";
 export const dynamic = "force-dynamic";
-import React,{useRef, useState} from "react";
+
+import React, { useRef, useState } from "react";
 import AuthGuard from "../authGuard/page,";
-import { useDispatch, useSelector } from "react-redux";
-import {Grid,Card,CardHeader,CardMedia,CardContent,Avatar,Typography,Button,Box,TextField,List,ListItem,ListItemText,ListItemAvatar,
+import {
+  Grid,
+  Card,
+  CardHeader,
+  CardMedia,
+  CardContent,
+  Avatar,
+  Typography,
+  Button,
+  Box,
+  TextField,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemAvatar,
+  Fade,
 } from "@mui/material";
 import { red } from "@mui/material/colors";
 import CancelIcon from "@mui/icons-material/Cancel";
+import InsertCommentIcon from "@mui/icons-material/InsertComment";
 import LoadingComment from "../LoadingComment/page";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 import { getComment } from "@/redux/Posts";
 
 export default function AllComment({ id, setModal }) {
-  const [loadingSend, setLoadingSend] = useState(false)
-    const commentRef = useRef(); 
-  const { comment, loadingComment } = useSelector((store) => store.postsReducer
-  );
+  const [loadingSend, setLoadingSend] = useState(false);
+  const commentRef = useRef();
+  const { comment, loadingComment } = useSelector((store) => store.postsReducer);
+  const dispatch = useDispatch();
 
-  let dispatch=useDispatch()
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const value = commentRef.current.value;
 
+    if (!value.trim()) {
+      toast.error("Write a comment before sending");
+      return;
+    }
 
-   const handleSubmit = async (e) => {
-  e.preventDefault();
-  const value = commentRef.current.value;
+    try {
+      setLoadingSend(true);
 
-  if (!value.trim()) {
-    toast.error('Write a comment before sending');
-    return;
-  }
-  try {
-    setLoadingSend(true)
-    let { data } = await axios.post(
-      `https://linked-posts.routemisr.com/comments`,
-      {
-        content: value,
-        post: id,
-      },
-      {
-        headers: {
-          token: localStorage.getItem('token'),
-        },
+      const token =
+        typeof window !== "undefined" ? localStorage.getItem("token") : null;
+      if (!token) {
+        toast.error("Token not found");
+        setLoadingSend(false);
+        return;
       }
-    );
-    setLoadingSend(false)
-    toast.success('Comment added successfully');
-    dispatch(getComment(id));
-    commentRef.current.value = "";
-  } catch (err) {
-        setLoadingSend(false)
-    toast.error('Failed to submit comment');
-    console.error(err);
-  }
-};
+
+      const { data } = await axios.post(
+        "https://linked-posts.routemisr.com/comments",
+        { content: value, post: id },
+        { headers: { token } }
+      );
+
+      toast.success(" Comment added");
+      dispatch(getComment(id));
+      commentRef.current.value = "";
+    } catch (err) {
+      toast.error("Failed to send comment");
+      console.error(err);
+    } finally {
+      setLoadingSend(false);
+    }
+  };
+
   return (
     <AuthGuard>
-      <Box
-        sx={{
-          height: "95vh",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        {/* Scrollable area */}
-        <Box
-          sx={{
-            flexGrow: 1,
-            overflowY: "auto",
- 
-          }}
-        >
-          {loadingComment === true ? (
+      <Box sx={{ height: "95vh", display: "flex", flexDirection: "column" }}>
+        {/* Scrollable Area */}
+        <Box sx={{ flexGrow: 1, overflowY: "auto", px: { xs: 1, sm: 2 } }}>
+          {loadingComment ? (
             <LoadingComment />
           ) : (
             <Grid container justifyContent="center">
@@ -79,12 +86,16 @@ export default function AllComment({ id, setModal }) {
                 sx={{
                   width: "100%",
                   maxWidth: 640,
-                  margin: "auto",
+                  mx: "auto",
+                  mt: 2,
+                  borderRadius: 3,
+                  boxShadow: "0px 8px 24px rgba(0,0,0,0.1)",
+                  background: "linear-gradient(145deg,#ffffff,#f0f0f0)",
                 }}
               >
                 <CardHeader
                   avatar={
-                    <Avatar sx={{ bgcolor: red[500] }}>
+                    <Avatar sx={{ bgcolor:'#777' }}>
                       <img
                         src={comment?.user?.photo}
                         style={{ width: "100%" }}
@@ -94,100 +105,135 @@ export default function AllComment({ id, setModal }) {
                   }
                   action={
                     <CancelIcon
-                      onClick={() => {
-                        setModal(false);
-                      }}
-                      sx={{ cursor: "pointer" }}
+                      onClick={() => setModal(false)}
+                      sx={{ cursor: "pointer", color: "#777" }}
                     />
                   }
-                  title={comment?.user?.name}
+                  title={
+                    <Typography sx={{ fontWeight: "bold", fontSize: 17 }}>
+                      {comment?.user?.name}
+                    </Typography>
+                  }
                   subheader={comment?.createdAt?.split("T")?.[0] ?? ""}
-
                 />
+
                 <CardContent>
-                  <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                  <Typography variant="body1" sx={{ color: "#444", fontSize: 15 }}>
                     {comment?.body}
                   </Typography>
                 </CardContent>
+
                 {comment?.image && (
                   <CardMedia
                     component="img"
                     height="300"
                     image={comment?.image}
                     alt="post image"
+                    sx={{ borderRadius: "0 0 16px 16px" }}
                   />
                 )}
 
+                {/* Comments Count */}
+                <Typography sx={{ fontWeight: "bold", px: 2, pt: 2 }}>
+                  💬 {comment?.comments?.length ?? 0} comments
+                </Typography>
+
                 {/* Comments List */}
-                <List sx={{ width: "100%", bgcolor: "#fff" }}>
-                 {[...(comment?.comments ?? [])].reverse().map((ite)  => (
-                    <ListItem
-                      key={ite._id}
-                      alignItems="flex-start"
-                      sx={{ bgcolor: "#eee6", mt: 1 }}
-                    >
-                      <ListItemAvatar>
-                        <Avatar
-                          alt={ite?.commentCreator?.name}
-                          src={ite?.commentCreator?.photo}
-                        />
-                      </ListItemAvatar>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          width: "100%",
-                        }}
-                      >
-                        <ListItemText
-                          primary={ite?.commentCreator?.name}
-                          secondary={ite?.content}
-                        />
-                        <Box
+                <List sx={{ width: "100%", px: 1, pb: 2 }}>
+                  {[...(comment?.comments ?? [])]
+                    .reverse()
+                    .map((ite) => (
+                      <Fade in timeout={500} key={ite._id}>
+                        <ListItem
+                          alignItems="flex-start"
                           sx={{
-                            fontSize: 12,
-                            transform: "translate(5px, -10px)",
-                            alignSelf: "flex-end",
+                            bgcolor: "#f9f9f9",
+                            mt: 1,
+                            borderRadius: 2,
+                            boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
                           }}
                         >
-                          {ite?.createdAt?.split("T")?.[0] || ""
-
-}
-                        </Box>
-                      </Box>
-                    </ListItem>
-                  ))}
+                          <ListItemAvatar>
+                            <Avatar
+                              alt={ite?.commentCreator?.name}
+                              src={ite?.commentCreator?.photo}
+                            />
+                          </ListItemAvatar>
+                          <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
+                            <ListItemText
+                              primary={
+                                <Typography sx={{ fontWeight: "bold" }}>
+                                  {ite?.commentCreator?.name}
+                                </Typography>
+                              }
+                              secondary={ite?.content}
+                            />
+                            <Box
+                              sx={{
+                                fontSize: 12,
+                                color: "#888",
+                                mt: 0.5,
+                                textAlign: "right",
+                              }}
+                            >
+                              {ite?.createdAt?.split("T")?.[0] || ""}
+                            </Box>
+                          </Box>
+                        </ListItem>
+                      </Fade>
+                    ))}
                 </List>
               </Card>
             </Grid>
           )}
         </Box>
 
-        {/* 📝 Fixed Input at Bottom */}
-        {loadingComment===false&&
-        <Box
-          component="form"
-                onSubmit={handleSubmit}
-          sx={{position: "sticky",bottom: 0,bgcolor: "#fff",boxShadow: "0 -2px 8px rgba(0,0,0,0.1)",zIndex: 100,p: 1,margin:'auto',width: {xs: "93%",sm: "94%", md: "623px"},
-            transform: {xs: "translateX(-7px)", sm: "translateX(-7px)", }}}>
-          <Box sx={{ display: "flex", gap: 2, maxWidth: 600, mx: "auto" }}>
-            <TextField
-              inputRef={commentRef}
-              name="comment"
-              placeholder="Write your comment here..."
-              variant="outlined"
-              fullWidth
-              multiline
-              maxRows={3}
-              sx={{ bgcolor: "#f9f9f9", borderRadius: 1 }}
-            />
-            <Button type="submit" variant="contained">
-              {loadingSend===true? <i className="fa-solid fa-spinner fa-spin" style={{fontSize : '17px'}}></i>: <span>send</span> }
-               
-            </Button>
+        {/* Comment Input Bar */}
+        {!loadingComment && (
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{
+              position: "sticky",
+              bottom: 0,
+              bgcolor: "#fff",
+              boxShadow: "0 -2px 8px rgba(0,0,0,0.1)",
+              zIndex: 100,
+              p: 1,
+              margin: "auto",
+              width: { xs: "93%", sm: "94%", md: "623px" },
+              transform: { xs: "translateX(-7px)", sm: "translateX(-7px)" },
+              borderTopLeftRadius: 12,
+              borderTopRightRadius: 12,
+            }}
+          >
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <TextField
+                inputRef={commentRef}
+                name="comment"
+                placeholder="Write your comment here..."
+                variant="outlined"
+                fullWidth
+                multiline
+                maxRows={3}
+                sx={{
+                  bgcolor: "#f9f9f9",
+                  borderRadius: 1,
+                }}
+              />
+              <Button type="submit" variant="contained">
+                {loadingSend ? (
+                  <i
+                    className="fa-solid fa-spinner fa-spin"
+                    style={{ fontSize: "17px" }}
+                  />
+                ) : (
+                  <span>send</span>
+                )}
+              </Button>
+            </Box>
           </Box>
-        </Box>
-        }
+        )}
       </Box>
     </AuthGuard>
   );

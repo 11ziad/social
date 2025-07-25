@@ -1,103 +1,183 @@
-"use client"
-export const dynamic = "force-dynamic";
-import React from 'react';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-import { Box, Grid, FormHelperText, FormControl, InputLabel ,Button,OutlinedInput,RadioGroup ,Radio,FormControlLabel, Typography } from '@mui/material';
-import axios from 'axios';
-import toast from 'react-hot-toast'
-import { useDispatch, useSelector } from 'react-redux'
- import { useRouter } from 'next/navigation'; // ← Next.js Router
-import { setLoading, setToken } from '@/redux/authSlice';
+"use client";
 
+import React, { useState, useContext } from "react";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import {
+  Box,
+  FormHelperText,
+  FormControl,
+  InputLabel,
+  Button,
+  OutlinedInput,
+  Typography,
+  IconButton,
+  InputAdornment,
+  Paper
+} from "@mui/material";
+import { Visibility, VisibilityOff, Login as LoginIcon } from "@mui/icons-material";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import { setLoading, setToken } from "@/redux/authSlice";
+import { UserContext } from "@/context/page";
+ 
 export default function Login() {
-  let {loading} = useSelector((store)=>store.authReducer)
+  const { loading } = useSelector((store) => store.authReducer);
+  const dispatch = useDispatch();
+  const router = useRouter();
 
+  const { refreshUserProfile } = useContext(UserContext);  
 
-  
-  const router = useRouter(); 
-  let dispatch = useDispatch()
-  async function registerForm(value) {
-     dispatch(setLoading(true))
-    try {
-      let { data } = await axios.post("https://linked-posts.routemisr.com/users/signin",value);
-      toast.success(data.message);
-      console.log(data);
-      localStorage.setItem('token', data.token);
-      dispatch(setToken(data.token));
-        dispatch(setLoading(false))
-        //  router.push('/allPosts');
-              router.replace('/allPosts');
-
-    } catch (err) {
-      toast.error(err?.response?.data?.error, {
-        autoClose: 4000,
-      });
-     dispatch(setLoading(false))
-    }
-  }
-     
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePassword = () => setShowPassword((prev) => !prev);
 
   const validationSchema = yup.object({
-     email : yup.string().required('email is required').email('invalid email').min(4, ' min 3 characters').max(60, ' max 15 characters'),
-    password : yup.string().required('password is required').min(4, ' min 3 characters').max(20, ' max 20 characters').matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/, 'The password is incorrect.'),
+    email: yup
+      .string()
+      .required("Email is required")
+      .email("Invalid email")
+      .min(4, "Min 4 characters")
+      .max(60, "Max 60 characters"),
+    password: yup
+      .string()
+      .required("Password is required")
+      .min(8, "Min 8 characters")
+      .max(20, "Max 20 characters")
+      .matches(
+        /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])/,
+        "Must include upper/lower case, number & symbol"
+      ),
   });
 
   const formik = useFormik({
-    initialValues: {
-      email: '',
-      password: '',
-    },
+    initialValues: { email: "", password: "" },
     validationSchema,
-    onSubmit: (values) => {
-      registerForm(values);
+    onSubmit: async (values) => {
+      dispatch(setLoading(true));
+      try {
+        const { data } = await axios.post(
+          "https://linked-posts.routemisr.com/users/signin",
+          values
+        );
+        toast.success(data.message || "Login successful");
+        localStorage.setItem("token", data.token);
+        dispatch(setToken(data.token));
+        refreshUserProfile(data.token); //  update data
+        router.replace("/allPosts");
+      } catch (err) {
+        const errorMessage =
+          err?.response?.data?.error || "Login failed. Please try again.";
+        toast.error(errorMessage);
+      } finally {
+        dispatch(setLoading(false));
+      }
     },
   });
 
   return (
-    <Box component="form" onSubmit={formik.handleSubmit} sx={{ mt: 3, md: {px: 4},mt:20}}>
-      <Grid container spacing={4} sx={{ background:'#EEE', width: {xs: '90%',md: '70%',lg:'40%'},padding:{xs : '20px', md:'20px'}, borderRadius: '8px', mt: 20,display: 'flex' , justifyContent:'center', flexWrap: 'wrap',alignItems:'center', margin: 'auto'}} >
-        <Typography sx={{color : 'blue'}}> welcom if you don't have account please create new account and come login to enter .
-</Typography>
-        {/* Password input - 50% */}
-        <Grid item xs={6} sx={{width :'100%'}} >
-          <FormControl fullWidth error={formik.touched.email && Boolean(formik.errors.email)}>
-            <InputLabel htmlFor="email">email</InputLabel>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#f7f7f7",
+        px: 2
+      }}
+    >
+      <Paper
+        elevation={6}
+        sx={{
+          width: { xs: "100%", sm: "80%", md: "50%", lg: "35%" },
+          p: 4,
+          borderRadius: 3,
+          bgcolor: "#fff",
+          textAlign: "center",
+        }}
+      >
+        <Typography variant="h5" fontWeight="bold" mb={1} color="primary">
+          Welcome Back
+        </Typography>
+        <Typography variant="body2" mb={4} color="text.secondary">
+          Log in to explore posts, interact with users, and share your story.
+        </Typography>
+
+        <Box component="form" onSubmit={formik.handleSubmit}>
+          {/* Email */}
+          <FormControl
+            fullWidth
+            margin="normal"
+            error={formik.touched.email && Boolean(formik.errors.email)}
+          >
+            <InputLabel>Email Address</InputLabel>
             <OutlinedInput
               id="email"
               name="email"
-               label="Email" 
-               value={formik.values.email}
+              type="email"
+              label="Email Address"
+              value={formik.values.email}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              autoComplete="email"
             />
-            <FormHelperText>{formik.touched.email && formik.errors.email}</FormHelperText>
+            <FormHelperText>
+              {formik.touched.email && formik.errors.email}
+            </FormHelperText>
           </FormControl>
-        </Grid>
 
-        {/* Password input - 50% */}
-        <Grid item xs={6} sx={{width :'100%'}} >
-          <FormControl fullWidth error={formik.touched.password && Boolean(formik.errors.password)}>
-            <InputLabel htmlFor="password">Password</InputLabel>
+          {/* Password */}
+          <FormControl
+            fullWidth
+            margin="normal"
+            error={formik.touched.password && Boolean(formik.errors.password)}
+          >
+            <InputLabel>Password</InputLabel>
             <OutlinedInput
               id="password"
               name="password"
-              type="password"
-               label="password" 
+              label="Password"
+              type={showPassword ? "text" : "password"}
               value={formik.values.password}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              autoComplete="current-password"
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton onClick={togglePassword} edge="end">
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
             />
-            <FormHelperText>{formik.touched.password && formik.errors.password}</FormHelperText>
+            <FormHelperText>
+              {formik.touched.password && formik.errors.password}
+            </FormHelperText>
           </FormControl>
-        </Grid>
-        <Button type='submit' variant="contained" sx={{width:'100%', paddingTop :'9px'}}>
-          {loading ===false? <span>Login</span> :<i className="fa-solid fa-spinner fa-spin" style={{fontSize : '17px'}}></i>
-          }
+
+          {/* Submit */}
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            startIcon={!loading && <LoginIcon />}
+            sx={{
+              mt: 3,
+              py: 1.5,
+              fontWeight: "bold",
+              fontSize: "1rem",
+              textTransform: "none",
+            }}
+          >
+            {loading ? (
+              <i className="fa-solid fa-spinner fa-spin" style={{ fontSize: "16px" }}></i>
+            ) : (
+              "Login"
+            )}
           </Button>
-
-
-      </Grid>
+        </Box>
+      </Paper>
     </Box>
   );
 }

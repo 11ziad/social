@@ -35,8 +35,7 @@ a{
   overflow-y: auto;
   z-index: 1000; 
   margin: auto;
-  transform: translate(-50%, -50%);
-  
+  transform: translate(-50%, -50%);  
 }
 /* شاشات أكبر من 600px */
 @media (max-width: 600px) {

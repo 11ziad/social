@@ -14,14 +14,13 @@ export default function MuiNavLink({ href, label }) {
         component="span"
                 sx={{
                   color: {
-          xs: isActive ? "#272727ff" : "#272727ff",     // موبايل
-          sm: isActive ? "#272727ff" : "#272727ff",    // تابلت صغير
-          md: isActive ? "#ccc" : "#222",       // لابتوب
-          lg: isActive ? "#fff" : "#fff",       // شاشات كبيرة
+          xs: isActive ? "#272727ff" : "#272727ff",   
+          sm: isActive ? "#272727ff" : "#272727ff", 
+          md: isActive ? "#fff" : "#fff",
+          lg: isActive ? "#fff" : "#fff", 
           },
-          fontWeight: isActive ? 'bold' : 'normal',
+          fontWeight: isActive ? 'mideum' : 'normal',
           borderBottom: isActive ? '2px solid white' : 'none',
-           px: 2,
           py: 1,
           cursor: 'pointer',
           transition: '0.3s',
