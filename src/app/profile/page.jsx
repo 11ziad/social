@@ -111,7 +111,7 @@ const deletePost = async (id) => {
           <Box
             sx={{
                overflowX: "hidden",
-              width: { xs: "90%", md: 700 },
+              width: { xs: "90%", md: 900 },
               margin:'auto',
               bgcolor: "white",
               bgcolor: theme.palette.mode === "dark" ? "#1e1e1e" : "#fff",
