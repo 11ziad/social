@@ -29,7 +29,8 @@ export default function Profile() {
   const dispatch = useDispatch();
   const router = useRouter();
   const theme = useTheme();
-
+  const [modalImg, setModalImg] = useState(false);
+  const [showImg, setShowImg] = useState(false);
 
     // title
   useEffect(() => {
@@ -83,6 +84,12 @@ const deletePost = async (id) => {
     // console.error(err);
   }
 };
+
+    const handelImage = (imgs)=>{
+          setShowImg(imgs)
+          setModalImg(true)
+    }
+
   return (
     <AuthGuard>
       <Fade in timeout={500}>
@@ -230,11 +237,16 @@ const deletePost = async (id) => {
                 subheader={item?.createdAt?.split("T")?.[0] ?? ""}
               />
               {item?.image && (
-                <CardMedia
+                <CardMedia onClick={()=>handelImage(item?.image)}
                   component="img"
                   height="300"
                   image={item.image}
                   alt="post image"
+                    sx={{
+                      objectFit: "cover",
+                      borderRadius: "0 0 12px 12px",
+                      cursor:'pointer'
+                    }}
                 />
               )}
               <CardContent>
@@ -261,6 +273,14 @@ const deletePost = async (id) => {
           </div>
         </>
       )}
+       {modalImg===true && (
+              <>
+                <div className="backdrop" onClick={() => setModalImg(false)} />
+                <Box sx={{bgcolor: theme.palette.mode === "dark" ? "#1e1e1e" : "#f5f5f5",}} className="modalImg">
+                      <img src={showImg} alt="" style={{width: "100%",height: "100%",objectFit: "cover",borderRadius: "8px"}}/>
+                </Box>
+              </>
+            )}
     </AuthGuard>
   );
 }

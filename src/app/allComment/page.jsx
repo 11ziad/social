@@ -9,7 +9,6 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { getComment } from "@/redux/Posts";
-import Head from 'next/head';
 import { useTranslation } from "react-i18next";
 
 export default function AllComment({ id, setModal }) {
@@ -194,7 +193,8 @@ export default function AllComment({ id, setModal }) {
                             multiline
                             maxRows={3}
                             InputProps={{
-                              sx: {px: { xs: .5, sm: 2 },py: { xs: 1.5, sm: 1.5 },},}}
+                              sx: {
+                                px: { xs: .5, sm: 2 },  py: { xs: 1.5, sm: 1.5 },},}}
                             sx={{
                                   bgcolor: theme.palette.mode === "dark" ? "#1e1e1e" : "#f5f5f5",borderRadius: 1,}}/>
                       <Button type="submit" variant="contained">

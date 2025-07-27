@@ -26,6 +26,8 @@ import Head from 'next/head';
 
 export default function AllPosts() {
   const [modal, setModal] = useState(false);
+  const [modalImg, setModalImg] = useState(false);
+  const [showImg, setShowImg] = useState(false);
   const [comId, setComId] = useState(null);
   const { posts, loading } = useSelector((store) => store.postsReducer);
     const { t } = useTranslation();
@@ -51,6 +53,12 @@ export default function AllPosts() {
     setModal(true);
     setComId(id);
   };
+
+
+    const handelImage = (imgs)=>{
+          setShowImg(imgs)
+          setModalImg(true)
+    }
 
   return (
     <AuthGuard>     
@@ -80,7 +88,7 @@ export default function AllPosts() {
             }}
           >
             {posts?.posts?.map((item) => (
-              <Card
+              <Card 
                 key={item.id}
                 sx={{
                   width: { xs: "90%", sm: 500, md: 700 },
@@ -107,14 +115,15 @@ export default function AllPosts() {
                   subheader={item?.createdAt?.split("T")?.[0] ?? ""}
                 />
                 {item?.image && (
-                  <CardMedia
+                  <CardMedia onClick={()=>handelImage(item?.image)}
                     component="img"
                     height="300"
                     image={item?.image}
                     alt="post image"
                     sx={{
                       objectFit: "cover",
-                      borderRadius: "0 0 12px 12px"
+                      borderRadius: "0 0 12px 12px",
+                      cursor:'pointer'
                     }}
                   />
                 )}
@@ -183,6 +192,14 @@ export default function AllPosts() {
           <div className="backdrop" onClick={() => setModal(false)} />
           <Box sx={{bgcolor: theme.palette.mode === "dark" ? "#1e1e1e" : "#f5f5f5",}} className="modal">
             <AllComment id={comId} setModal={setModal} />
+          </Box>
+        </>
+      )}
+       {modalImg===true && (
+        <>
+          <div className="backdrop" onClick={() => setModalImg(false)} />
+          <Box sx={{bgcolor: theme.palette.mode === "dark" ? "#1e1e1e" : "#f5f5f5",}} className="modalImg">
+                <img src={showImg} alt="" style={{width: "100%",height: "100%",objectFit: "cover",borderRadius: "8px"}}/>
           </Box>
         </>
       )}
