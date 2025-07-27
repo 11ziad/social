@@ -1,19 +1,26 @@
 "use client";
-import React, { useContext, useState } from "react";
-import {Box,Typography,Avatar,TextField,Button,IconButton,Paper,Stack,} from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
+import {Box,Typography,Avatar,TextField,Button,IconButton,Paper,Stack, useTheme,} from "@mui/material";
 import {Close,Image as ImageIcon,LocationOn,EmojiEmotions,WhatsApp,} from "@mui/icons-material";
 import { useRouter } from "next/navigation";
 import { UserContext } from "@/context/page";
 import toast from "react-hot-toast";
 import axios from "axios";
 import AuthGuard from "../authGuard/page,";
-import {Helmet} from "react-helmet";
+import Head from 'next/head';
+import { useTranslation } from "react-i18next";
 
 const AddPost = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { userProfile } = useContext(UserContext);
+    const { t } = useTranslation();
+    const theme = useTheme();
+// title
+  useEffect(() => {
+    document.title = "Add post";
+  }, []);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -24,7 +31,7 @@ const AddPost = () => {
       };
       reader.readAsDataURL(file);
     } else {
-      toast.error("Please select a valid image file.");
+      toast.error(t("Pleaseselectavalidimagefile"));
     }
   };
 
@@ -36,7 +43,7 @@ const AddPost = () => {
     const image = form.image.files[0];
 
     if (image && !image.type.startsWith("image/")) {
-      toast.error("Please select a valid image file.");
+      toast.error(t("Pleaseselectavalidimagefile"));
       return;
     }
 
@@ -58,10 +65,10 @@ const AddPost = () => {
         headers: { token },
       });
 
-      toast.success("  Post added successfully!");
+      toast.success(t("Postaddedsuccessfully"));
       router.replace("/profile");
     } catch (err) {
-      toast.error(" Failed to create post. Try again.");
+      toast.error(t("FailedtocreatepostTryagain"));
       // console.error(err);
     } finally {
       setLoading(false);
@@ -70,56 +77,26 @@ const AddPost = () => {
 
   return (
     <AuthGuard>
-            <Helmet>
-                <meta charSet="utf-8" />
-                <title>Add Post</title>
-             </Helmet>
-      <Paper
-        elevation={4}
-        sx={{
-          mt: 12,
-          p: 4,
-          maxWidth: 500,
-          mx: "auto",
-          borderRadius: 4,
-          background: "#fdfdfd",
-          boxShadow: "0px 10px 25px rgba(0,0,0,0.08)",
-        }}
-      >
+      <Paper elevation={4}
+        sx={{mt: 12,p: 4,maxWidth: 500,mx: "auto",mb:2,borderRadius: 4,bgcolor: theme.palette.mode === "dark" ? "#1e1e1e" : "#fff",boxShadow: "0px 10px 25px rgba(0,0,0,0.08)",}}>
         <Box component="form" onSubmit={handelSubmit}>
           <Stack spacing={3} alignItems="center">
-            {/* ✖️ Close Button */}
-            <IconButton
-              onClick={() => router.push("/profile")}
-              sx={{
-                position: "absolute",
-                top: 16,
-                right: 16,
-                background: "#f44336",
-                color: "#fff",
-                "&:hover": { background: "#d32f2f" },
-              }}
-            >
+            {/*Close Button */}
+            <IconButton onClick={() => router.push("/profile")}
+              sx={{position: "absolute",top: 16,right: 16,background: "#f44336",color: "#fff","&:hover": { background: "#d32f2f" },}}>
               <Close />
             </IconButton>
 
             {/*   Title */}
             <Typography variant="h5" fontWeight="bold" color="primary">
-              Create a Post
+              {t('createyourpost')}
             </Typography>
 
             {/*   User Info */}
             <Stack direction="row" spacing={2} alignItems="center">
               <Avatar
                 src={userProfile?.photo}
-                sx={{
-                  width: 70,
-                  height: 70,
-                  border: "3px solid #1976d2",
-                  transition: "0.3s",
-                  "&:hover": { transform: "scale(1.05)" },
-                }}
-              />
+                sx={{width: 70,height: 70,border: "3px solid #1976d2",transition: "0.3s","&:hover": { transform: "scale(1.05)" },}}/>
               <Box>
                 <Typography fontWeight="medium">{userProfile?.name}</Typography>
                 <Typography variant="caption" color="text.secondary">
@@ -136,14 +113,7 @@ const AddPost = () => {
               name="body"
               placeholder={`💬 What's on your mind, ${userProfile?.name}?`}
               variant="outlined"
-              sx={{
-                bgcolor: "#fff",
-                borderRadius: 2,
-                "& .MuiOutlinedInput-root": {
-                  px: 2,
-                },
-              }}
-            />
+              sx={{bgcolor: theme.palette.mode === "dark" ? "#1e1e1e" : "#fff",borderRadius: 2,"& .MuiOutlinedInput-root": {px: 2,},}}/>
 
             {/*   Image Preview */}
             {imagePreview && (
@@ -151,17 +121,7 @@ const AddPost = () => {
                 component="img"
                 src={imagePreview}
                 alt="Preview"
-                sx={{
-                  width: "100%",
-                  height: 220,
-                  objectFit: "cover",
-                  borderRadius: 3,
-                  boxShadow: "0px 6px 20px rgba(0,0,0,0.1)",
-                }}
-              />
-            )}
-
- 
+              sx={{width: "100%",height: 220,objectFit: "cover",borderRadius: 3,boxShadow: "0px 6px 20px rgba(0,0,0,0.1)",}}/>)}
             <Stack direction="row" spacing={1}>
               <IconButton color="primary"><EmojiEmotions /></IconButton>
               <IconButton color="success"><WhatsApp /></IconButton>
@@ -196,7 +156,7 @@ const AddPost = () => {
                 textTransform: "none",
               }}
             >
-              {loading ? "Uploading..." : "Post"}
+              {loading ? t("Uploading") : t("Post")}
             </Button>
           </Stack>
         </Box>

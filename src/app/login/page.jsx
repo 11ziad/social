@@ -1,8 +1,8 @@
 "use client";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import {Box,FormHelperText,FormControl,InputLabel,Button,OutlinedInput,Typography,IconButton,InputAdornment,Paper} from "@mui/material";
+import {Box,FormHelperText,FormControl,InputLabel,Button,OutlinedInput,Typography,IconButton,InputAdornment,Paper, useTheme} from "@mui/material";
 import { Visibility, VisibilityOff, Login as LoginIcon } from "@mui/icons-material";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -10,33 +10,40 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { setLoading, setToken } from "@/redux/authSlice";
 import { UserContext } from "@/context/page";
- import {Helmet} from "react-helmet";
+import Head from 'next/head';
+import { useTranslation } from "react-i18next";
 
 export default function Login() {
   const { loading } = useSelector((store) => store.authReducer);
   const dispatch = useDispatch();
   const router = useRouter();
-
+  const theme = useTheme();
+    const { t } = useTranslation();
   const { refreshUserProfile } = useContext(UserContext);  
-
   const [showPassword, setShowPassword] = useState(false);
   const togglePassword = () => setShowPassword((prev) => !prev);
+
+  // title
+    useEffect(() => {
+    document.title = "Login";
+  }, []);
+
 
   const validationSchema = yup.object({
     email: yup
       .string()
-      .required("Email is required")
-      .email("Invalid email")
-      .min(4, "Min 4 characters")
-      .max(60, "Max 60 characters"),
+      .required(t("Emailisrequired"))
+      .email(t("Invalidemail"))
+      .min(4, t("Min4characters"))
+      .max(60, t("Max60characters")),
     password: yup
       .string()
-      .required("Password is required")
-      .min(8, "Min 8 characters")
-      .max(20, "Max 20 characters")
+      .required(t('Passwordisrequired'))
+      .min(8, t("Min8characters"))
+      .max(20, t("Max20characters"))
       .matches(
         /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])/,
-        "Must include upper/lower case, number & symbol"
+        t('Includeupperslowercasenumberspecialcharacter')
       ),
   });
 
@@ -72,14 +79,9 @@ export default function Login() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#f7f7f7",
         px: 2
       }}
     >
-             <Helmet>
-                <meta charSet="utf-8" />
-                <title>Login</title>
-             </Helmet>
  
       <Paper
         elevation={6}
@@ -87,15 +89,16 @@ export default function Login() {
           width: { xs: "100%", sm: "80%", md: "50%", lg: "35%" },
           p: 4,
           borderRadius: 3,
-          bgcolor: "#fff",
+                   bgcolor: theme.palette.mode === "dark" ? "#1e1e1e" : "#fafafa",
+
           textAlign: "center",
         }}
       >
         <Typography variant="h5" fontWeight="bold" mb={1} color="primary">
-          Welcome Back
+        {t('WelcomeBack')}
         </Typography>
         <Typography variant="body2" mb={4} color="text.secondary">
-          Log in to explore posts, interact with users, and share your story.
+          {t('Logintoexploreposts')}
         </Typography>
 
         <Box component="form" onSubmit={formik.handleSubmit}>
@@ -105,7 +108,7 @@ export default function Login() {
             margin="normal"
             error={formik.touched.email && Boolean(formik.errors.email)}
           >
-            <InputLabel>Email Address</InputLabel>
+            <InputLabel>{t('EmailAddress')}</InputLabel>
             <OutlinedInput
               id="email"
               name="email"
@@ -127,7 +130,7 @@ export default function Login() {
             margin="normal"
             error={formik.touched.password && Boolean(formik.errors.password)}
           >
-            <InputLabel>Password</InputLabel>
+            <InputLabel>{t('Password')}</InputLabel>
             <OutlinedInput
               id="password"
               name="password"
@@ -167,7 +170,7 @@ export default function Login() {
             {loading ? (
               <i className="fa-solid fa-spinner fa-spin" style={{ fontSize: "16px" }}></i>
             ) : (
-              "Login"
+              t("Login")
             )}
           </Button>
         </Box>

@@ -1,7 +1,7 @@
 "use client";
 export const dynamic = "force-dynamic";
 import React, { useContext, useEffect, useState } from "react";
-import {Grid,Box,Typography,Card,CardHeader,CardContent,CardMedia,CardActions,IconButton,Fade,Avatar,AvatarGroup,SpeedDial,SpeedDialIcon,Button,} from "@mui/material";
+import {Grid,Box,Typography,Card,CardHeader,CardContent,CardMedia,CardActions,IconButton,Fade,Avatar,AvatarGroup,SpeedDial,SpeedDialIcon,Button, useTheme,} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import InsertCommentIcon from "@mui/icons-material/InsertComment";
@@ -15,17 +15,26 @@ import { getComment, userPosts } from "@/redux/Posts";
 import AllComment from "../allComment/page";
 import AuthGuard from "../authGuard/page,";
 import Loading from "../loadingPosts/page";
-import {Helmet} from "react-helmet";
+import Head from 'next/head';
+import { useTranslation } from "react-i18next";
 
 export default function Profile() {
   const { userProfile, refreshUserProfile, load } = useContext(UserContext);
   const { userPost } = useSelector((store) => store.postsReducer);
   const [tokenData, setTokenData] = useState(null);
+  const { t} = useTranslation();
   const [modal, setModal] = useState(false);
   const [comId, setComId] = useState(null);
   const { token } = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
   const router = useRouter();
+  const theme = useTheme();
+
+
+    // title
+  useEffect(() => {
+    document.title = "Profile";
+  }, []);
 
   useEffect(() => {
     if (token) {
@@ -68,9 +77,9 @@ const deletePost = async (id) => {
     const decoded = jwtDecode(token);
     dispatch(userPosts(decoded.user));
     refreshUserProfile();
-    toast.success("Post deleted");
+    toast.success(t("Postdeleted"));
   } catch (err) {
-    toast.error("Failed to delete");
+    toast.error(t("Failedtodelete"));
     // console.error(err);
   }
 };
@@ -90,10 +99,7 @@ const deletePost = async (id) => {
         <Loading />
       ) : (
         <Grid container justifyContent="center" sx={{ mt: 10 }}>
-             <Helmet>
-                <meta charSet="utf-8" />
-                <title>Profile</title>
-             </Helmet>
+    
  
           <Box
             sx={{
@@ -101,6 +107,8 @@ const deletePost = async (id) => {
               width: { xs: "90%", md: 700 },
               margin:'auto',
               bgcolor: "white",
+              bgcolor: theme.palette.mode === "dark" ? "#1e1e1e" : "#fff",
+
               borderRadius: 3,
               p: 3,
               boxShadow: 3,
@@ -168,25 +176,27 @@ const deletePost = async (id) => {
       >
         {userPost?.posts?.length === 0 ? (
           <Box
-            sx={{mt: 1,textAlign: "center",bgcolor: "#f5f5f5",p: 4,borderRadius: 3,boxShadow: "0px 4px 20px rgba(0,0,0,0.07)",width: { xs: "90%", md: 500 },margin: "auto",}}>
+            sx={{mt: 1,textAlign: "center",
+              bgcolor: theme.palette.mode === "dark" ? "#1e1e1e" : "#fff",
+            p: 4,borderRadius: 3,boxShadow: "0px 4px 20px rgba(0,0,0,0.07)",width: { xs: "90%", md: 500 },margin: "auto",}}>
             <Typography
               variant="h6"
               fontWeight="bold"
               color="text.secondary"
               mb={2}
             >
-              There are no posts yet.
+              {t('Therearenopostsyet')}
             </Typography>
                       <Typography
             variant="body2"
             color="text.secondary"
             mb={3}
             sx={{
-              pr: { xs: 4, sm: 6, md: 0 },  
-              textAlign: { xs: "center", sm: "start" }  
+ 
+              textAlign: { xs: "center", sm: "start" , display:'flex', justifyContent:'center', alignItems:'center'}  
             }}
           >
-            Share your thoughts or a special moment with others. Your first post will be a great start
+           {t('Shareyour')}
           </Typography>
             <Button
               variant="contained"
@@ -200,7 +210,7 @@ const deletePost = async (id) => {
                 fontWeight: "bold",
               }}
             >
-              Create your first post
+              {t('Createyourfirstpost')}
             </Button>
           </Box>
         ) : (

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import {Box,Button,FormControl,FormHelperText,InputAdornment,InputLabel,OutlinedInput,Paper,Typography} from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useFormik } from "formik";
@@ -10,25 +10,29 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { setLoading, setToken } from "@/redux/authSlice";
 import { useRouter } from "next/navigation";
- import {Helmet} from "react-helmet";
+import { useTranslation } from "react-i18next";
 
 export default function ForgotPasswordPage() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { loading, token } = useSelector((state) => state.authReducer);
-
+  const { t} = useTranslation();
   const headers = { token };
+  // title
+  useEffect(() => {
+    document.title = "New Password";
+  }, []);
 
   const validationSchema = yup.object({
-    password: yup.string().required("Current password is required"),
+    password: yup.string().required(t("Currentpasswordisrequired")),
     newPassword: yup
       .string()
-      .required("New password is required")
-      .min(8, "At least 8 characters")
-      .max(20, "Max 20 characters")
+      .required(t('Newpasswordisrequired'))
+      .min(8, t("Atleast8characters"))
+      .max(20, t("Max20characters"))
       .matches(
         /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])/,
-        "Include upper/lowercase, number & special character"
+        t("Includeupperslowercasenumberspecialcharacter")
       ),
   });
 
@@ -48,12 +52,12 @@ export default function ForgotPasswordPage() {
             headers,
           }
         );
-        toast.success("Password updated successfully");
+        toast.success(t("Passwordupdatedsuccessfully"));
         dispatch(setToken(data.token));
         router.replace("/");
       } catch (err) {
         toast.error(
-          err?.response?.data?.message || "Incorrect password or error occurred"
+          err?.response?.data?.message || t("Incorrectpasswordorerroroccurred")
         );
         dispatch(setLoading(false));
       }
@@ -70,14 +74,9 @@ export default function ForgotPasswordPage() {
           p: 3,
         }}
       >
-             <Helmet>
-                <meta charSet="utf-8" />
-                <title>New password</title>
-             </Helmet>
- 
         <Paper elevation={3} sx={{ p: 4, borderRadius: 3 }}>
           <Typography variant="h5" fontWeight="bold" color="primary" mb={2}>
-            Change Your Password
+            {t('ChangeYourPassword')}
           </Typography>
 
           <form onSubmit={formik.handleSubmit}>
@@ -86,11 +85,11 @@ export default function ForgotPasswordPage() {
               margin="normal"
               error={formik.touched.password && Boolean(formik.errors.password)}
             >
-              <InputLabel>Current Password</InputLabel>
+              <InputLabel>{t('CurrentPassword')}</InputLabel>
               <OutlinedInput
                 type="password"
                 name="password"
-                label="Current Password"
+                label={t('CurrentPassword')}
                 value={formik.values.password}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -108,7 +107,7 @@ export default function ForgotPasswordPage() {
                 Boolean(formik.errors.newPassword)
               }
             >
-              <InputLabel>New Password</InputLabel>
+              <InputLabel>{t('NewPassword')}</InputLabel>
               <OutlinedInput
                 type="password"
                 name="newPassword"
@@ -137,7 +136,7 @@ export default function ForgotPasswordPage() {
               {loading ? (
                 <i className="fa-solid fa-spinner fa-spin"></i>
               ) : (
-                "Update Password"
+                t("UpdatePassword")
               )}
             </Button>
           </form>

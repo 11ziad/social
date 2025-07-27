@@ -1,36 +1,38 @@
 "use client";
 export const dynamic = "force-dynamic";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AuthGuard from "../authGuard/page,";
-import {Grid,Card,CardHeader,CardMedia,CardContent,Avatar,Typography,Button,Box,TextField,List,ListItem,ListItemText,ListItemAvatar,Fade} from "@mui/material";
-import { red } from "@mui/material/colors";
+import {Grid,Card,CardHeader,CardMedia,CardContent,Avatar,Typography,Button,Box,TextField,List,ListItem,ListItemText,ListItemAvatar,Fade, useTheme} from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
  import LoadingComment from "../LoadingComment/page";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { getComment } from "@/redux/Posts";
-import {Helmet} from "react-helmet";
-
+import Head from 'next/head';
+import { useTranslation } from "react-i18next";
 
 export default function AllComment({ id, setModal }) {
   const [loadingSend, setLoadingSend] = useState(false);
   const commentRef = useRef();
+    const { t } = useTranslation();
   const { comment, loadingComment } = useSelector((store) => store.postsReducer);
   const dispatch = useDispatch();
+  const theme = useTheme();
+  // title
+  useEffect(() => {
+    document.title = "Comments";
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const value = commentRef.current.value;
-
     if (!value.trim()) {
-      toast.error("Write a comment before sending");
+      toast.error(t("Writeacommentbeforesending"));
       return;
     }
-
     try {
       setLoadingSend(true);
-
       const token =
         typeof window !== "undefined" ? localStorage.getItem("token") : null;
       if (!token) {
@@ -38,18 +40,16 @@ export default function AllComment({ id, setModal }) {
         setLoadingSend(false);
         return;
       }
-
       const { data } = await axios.post(
         "https://linked-posts.routemisr.com/comments",
         { content: value, post: id },
         { headers: { token } }
       );
-
-      toast.success(" Comment added");
+      toast.success(t("Commentadded"));
       dispatch(getComment(id));
       commentRef.current.value = "";
     } catch (err) {
-      toast.error("Failed to send comment");
+      toast.error(t('Failedtosendcomment'));
       // console.error(err);
     } finally {
       setLoadingSend(false);
@@ -58,11 +58,8 @@ export default function AllComment({ id, setModal }) {
 
   return (
     <AuthGuard>
-      <Box sx={{ height: "95vh", display: "flex", flexDirection: "column",p: { xs: 3, sm: 0, md: 0 }, }}>,
-             <Helmet>
-                <meta charSet="utf-8" />
-                <title>My Title</title>
-             </Helmet>
+      <Box sx={{ height: "90vh", display: "flex", flexDirection: "column",p: { xs: 3, sm: 0, md: 0 },bgcolor: theme.palette.mode === "dark" ? "#1e1e1e" : "#f5f5f5"}}>
+
           {/* Scrollable Area */}
         <Box sx={{ flexGrow: 1, overflowY: "auto", px: { xs: 1, sm: 2 } }}>
           {loadingComment ? (
@@ -71,16 +68,7 @@ export default function AllComment({ id, setModal }) {
             <Grid container justifyContent="center">
               <Card
                 key={comment?.id}
-                sx={{
-                  width: "100%",
-                  maxWidth: 640,
-                  mx: "auto",
-                  mt: 2,
-                  borderRadius: 3,
-                  boxShadow: "0px 8px 24px rgba(0,0,0,0.1)",
-                  background: "linear-gradient(145deg,#ffffff,#f0f0f0)",
-                }}
-              >
+                sx={{width: "100%",maxWidth: 690,mx: "auto",mt: {md:2},borderRadius: 3,boxShadow: "0px 8px 24px rgba(0,0,0,0.1)",bgcolor: theme.palette.mode === "dark" ? "#1e1e1e" : "#fff",}}>
                 <CardHeader
                   avatar={
                     <Avatar sx={{ bgcolor:'#777' }}>
@@ -106,7 +94,7 @@ export default function AllComment({ id, setModal }) {
                 />
 
                 <CardContent>
-                  <Typography variant="body1" sx={{ color: "#444", fontSize: 15 }}>
+                  <Typography variant="body1" sx={{color:theme.palette.mode === "dark" ? "#b4b4b4ff" : "#424242ff", fontSize: 15 }}>
                     {comment?.body}
                   </Typography>
                 </CardContent>
@@ -123,7 +111,7 @@ export default function AllComment({ id, setModal }) {
 
                 {/* Comments Count */}
                 <Typography sx={{ fontWeight: "bold", px: 2, pt: 2 }}>
-                  💬 {comment?.comments?.length ?? 0} comments
+                  💬 {comment?.comments?.length ?? 0} {t('comments')}
                 </Typography>
 
                 {/* Comments List */}
@@ -135,7 +123,8 @@ export default function AllComment({ id, setModal }) {
                         <ListItem
                           alignItems="flex-start"
                           sx={{
-                            bgcolor: "#f9f9f9",
+                             bgcolor: theme.palette.mode === "dark" ? "#1e1e1e" : "#f9f9f9",
+ 
                             mt: 1,
                             borderRadius: 2,
                             boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
@@ -176,60 +165,49 @@ export default function AllComment({ id, setModal }) {
           )}
         </Box>
 
-        {/* Comment Input Bar */}
-        {!loadingComment && (
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{
-              position: "sticky",
-              bottom: 3,
-              bgcolor: "#fff",
-              boxShadow: "0 -2px 8px rgba(0,0,0,0.1)",
-              zIndex: 100,
-              p: 1,
-               margin: "auto",
-              width: { xs: "93%", sm: "94%", md: "623px" },
-              transform: { xs: "translateX(7px)", sm: "translateX(-7px)" },
-              borderTopLeftRadius: 12,
-              borderTopRightRadius: 12,
-            }}
-          >
-            <Box sx={{ display: "flex", gap: 2 }}>
-                          <TextField
-                    inputRef={commentRef}
-                    name="comment"
-                    placeholder="Write your comment here..."
-                    variant="outlined"
-                    fullWidth
-                    multiline
-                    maxRows={3}
-                    InputProps={{
-                      sx: {
-                        px: { xs: 1, sm: 2 },  
-                        py: { xs: 1, sm: 1.5 },
-                      },
-                    }}
-                    sx={{
-                      bgcolor: "#f9f9f9",
-                      borderRadius: 1,
-                    }}
-                  />
-
-              <Button type="submit" variant="contained">
-                {loadingSend ? (
-                  <i
-                    className="fa-solid fa-spinner fa-spin"
-                    style={{ fontSize: "17px" }}
-                  />
-                ) : (
-                  <span>send</span>
+                  {/* Comment Input Bar */}
+                  {!loadingComment && (
+                    <Box
+                      component="form"
+                      onSubmit={handleSubmit}
+                      sx={{
+                        position: "sticky",
+                        bottom: 3,
+                        bgcolor: theme.palette.mode === "dark" ? "#1e1e1e" : "#f5f5f5",
+                        boxShadow: "0 -2px 8px rgba(0,0,0,0.1)",
+                        zIndex: 100,
+                        p: 1,
+                        margin: "auto",
+                        width: { xs: "93%", sm: "94%", md: "570px" },
+                        transform: { xs: "translateX(7px)", sm: "translateX(-7px)", md: "translateX(-8px)" },
+                        borderTopLeftRadius: 12,
+                        borderTopRightRadius: 12,
+                      }}
+                            >
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                                  <TextField
+                            inputRef={commentRef}
+                            name="comment"
+                            placeholder={t("Writeyourcommenthere")}
+                            variant="outlined"
+                            fullWidth
+                            multiline
+                            maxRows={3}
+                            InputProps={{
+                              sx: {px: { xs: .5, sm: 2 },py: { xs: 1.5, sm: 1.5 },},}}
+                            sx={{
+                                  bgcolor: theme.palette.mode === "dark" ? "#1e1e1e" : "#f5f5f5",borderRadius: 1,}}/>
+                      <Button type="submit" variant="contained">
+                        {loadingSend ? (
+                          <i className="fa-solid fa-spinner fa-spin"style={{ fontSize: "17px" }}/>
+                        ) : (
+                          <span>{t('send')}</span>
+                        )}
+                      </Button>
+                    </Box>
+                  </Box>
                 )}
-              </Button>
-            </Box>
           </Box>
-        )}
-      </Box>
-    </AuthGuard>
+        </AuthGuard>
   );
 }

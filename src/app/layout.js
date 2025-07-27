@@ -13,8 +13,9 @@ import { userPosts } from "@/redux/Posts";
 import { jwtDecode } from "jwt-decode";
 import { Offline} from "react-detect-offline";
 import Alert from '@mui/material/Alert';
-import Stack from '@mui/material/Stack';
-import { Box } from "@mui/material";
+ import { Box } from "@mui/material";
+import './i18n';
+import { ColorModeProvider } from "@/context/ThemeContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,6 +48,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Provider store={store}>
+               <ColorModeProvider>
           <UserContextProvider>
             <Navbar />
             <InitUserData /> 
@@ -62,7 +64,7 @@ export default function RootLayout({ children }) {
                     width: { xs: "80%", sm: 300 },
                     maxWidth: "90vw",
                   }}
-                >
+                  >
                   <Alert
                     severity="warning"
                     variant="outlined" 
@@ -82,6 +84,7 @@ export default function RootLayout({ children }) {
 
  
           </UserContextProvider>
+                    </ColorModeProvider>
         </Provider>
       </body>
     </html>

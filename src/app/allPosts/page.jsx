@@ -7,7 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getComment, getPosts } from "@/redux/Posts";
 import {
   Grid, Card, CardHeader, CardMedia, CardContent,
-  CardActions, Avatar, IconButton, Typography, Box
+  CardActions, Avatar, IconButton, Typography, Box,
+  useTheme
 } from "@mui/material";
  import InsertCommentIcon from "@mui/icons-material/InsertComment";
 import Loading from "../loadingPosts/page";
@@ -18,19 +19,29 @@ import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import EditIcon from '@mui/icons-material/Edit';
 import { useRouter } from "next/navigation";
-import {Helmet} from "react-helmet";
+import { useTranslation } from "react-i18next";
+import Head from 'next/head';
+
+
 
 export default function AllPosts() {
   const [modal, setModal] = useState(false);
   const [comId, setComId] = useState(null);
   const { posts, loading } = useSelector((store) => store.postsReducer);
+    const { t } = useTranslation();
   const dispatch = useDispatch();
   const router = useRouter();
   const [page, setPage] = useState(1);
+ const theme = useTheme();
 
   useEffect(() => {
     dispatch(getPosts({ limit: 50, page }));
   }, [page]);
+
+  // title
+  useEffect(() => {
+    document.title = "All posts";
+  }, []);
 
   const handleNextPage = () => setPage((prev) => prev + 1);
   const handlePrevPage = () => page > 1 && setPage((prev) => prev - 1);
@@ -43,12 +54,9 @@ export default function AllPosts() {
 
   return (
     <AuthGuard>     
-            <Helmet>
-                <meta charSet="utf-8" />
-                <title>posts</title>
-                <link rel="canonical" href="http://mysite.com/example" />
-            </Helmet>
- 
+            <Head>
+         <meta name="description" content="All posts" />
+      </Head>
        <Box sx={{ position: "fixed", bottom: 0, right: 0 }}>
         <SpeedDial
           ariaLabel="Add Post"
@@ -79,7 +87,8 @@ export default function AllPosts() {
                   my: 2,
                   boxShadow: 4,
                   borderRadius: 3,
-                  bgcolor: "#fafafa",
+                   bgcolor: theme.palette.mode === "dark" ? "#1e1e1e" : "#fafafa",
+
                 }}
               >
                 <CardHeader
@@ -139,7 +148,7 @@ export default function AllPosts() {
               display: "flex",
               gap: 2,
               zIndex: 999,
-              background: "#fff",
+              bgcolor: theme.palette.mode === "dark" ? "#1e1e1e" : "#fff",
               boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
               borderRadius: "30px",
               px: 3,
@@ -150,18 +159,18 @@ export default function AllPosts() {
             <IconButton
               onClick={handlePrevPage}
               disabled={page === 1}
-              sx={{ bgcolor: "#f5f5f5", "&:hover": { bgcolor: "#ddd" } }}
+              sx={{ bgcolor: theme.palette.mode === "dark" ? "#1e1e1e" : "#f5f5f5", "&:hover": { bgcolor: "#ddd" } }}
             >
               <ArrowBackIosNewIcon />
             </IconButton>
 
             <Typography variant="body2" sx={{ fontWeight: "bold",fontSize:{xs:12, md:14},display:'flex', justifyContent:'center',alignItems:'center' , gap:1}}>
-             <span>  page </span><span> {page}</span>
+             <span>  {t('page')} </span><span> {page}</span>
             </Typography>
 
             <IconButton
               onClick={handleNextPage}
-              sx={{ bgcolor: "#f5f5f5", "&:hover": { bgcolor: "#ddd" } }}
+              sx={{ bgcolor: theme.palette.mode === "dark" ? "#1e1e1e" : "#f5f5f5", "&:hover": { bgcolor: "#ddd" } }}
             >
               <ArrowForwardIosIcon />
             </IconButton>
@@ -172,9 +181,9 @@ export default function AllPosts() {
        {modal && (
         <>
           <div className="backdrop" onClick={() => setModal(false)} />
-          <div className="modal">
+          <Box sx={{bgcolor: theme.palette.mode === "dark" ? "#1e1e1e" : "#f5f5f5",}} className="modal">
             <AllComment id={comId} setModal={setModal} />
-          </div>
+          </Box>
         </>
       )}
     </AuthGuard>

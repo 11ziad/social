@@ -1,17 +1,25 @@
 "use client";
-import React, { useState } from "react";
-import {Box,Avatar,Typography,Button,IconButton,Stack,Paper,} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {Box,Avatar,Typography,Button,IconButton,Stack,Paper, useTheme,} from "@mui/material";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import {Helmet} from "react-helmet";
+import Head from 'next/head';
+import { useTranslation } from "react-i18next";
 
 export default function ProfileImageUploader() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [preview, setPreview] = useState(null);
+  const { t} = useTranslation();
+  const theme = useTheme();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  // title
+    useEffect(() => {
+    document.title = "Profile Photo";
+  }, []);
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -53,10 +61,10 @@ export default function ProfileImageUploader() {
         }
       );
 
-      toast.success("Photo updated successfully");
+      toast.success(t("Photoupdatedsuccessfully"));
       router.replace("/profile");
     } catch (err) {
-      toast.error("Failed to update photo");
+      toast.error(t('Failedtoupdatephoto'));
       // console.error(err);
     } finally {
       setLoading(false);
@@ -71,18 +79,15 @@ export default function ProfileImageUploader() {
         borderRadius: 4,
         maxWidth: 400,
         margin: "auto",
-        mt: 17,
-        background: "#f9f9f9",
+        mt: 15,
+        mb:3,
+        background: theme.palette.mode === "dark" ? "#1e1e1e" : "#fff",
+
       }}
     >
-             <Helmet>
-                <meta charSet="utf-8" />
-                <title>Profile Photo</title>
-             </Helmet>
- 
       <Stack spacing={3} alignItems="center">
         <Typography variant="h5" fontWeight="bold" color="primary">
-          Upload Profile Picture
+          {t('UploadProfilePicture')}
         </Typography>
 
         <Box position="relative">
@@ -135,7 +140,7 @@ export default function ProfileImageUploader() {
           disabled={!selectedImage || loading}
           sx={{ px: 4 }}
         >
-          {loading ? "Uploading..." : "Save"}
+          {loading ? "Uploading..." : t("save")}
         </Button>
       </Stack>
     </Paper>
