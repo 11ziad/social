@@ -15,8 +15,7 @@ import { getComment, userPosts } from "@/redux/Posts";
 import AllComment from "../allComment/page";
 import AuthGuard from "../authGuard/page,";
 import Loading from "../loadingPosts/page";
-import Head from 'next/head';
-import { useTranslation } from "react-i18next";
+ import { useTranslation } from "react-i18next";
 
 export default function Profile() {
   const { userProfile, refreshUserProfile, load } = useContext(UserContext);
